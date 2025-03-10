@@ -21,7 +21,7 @@ interface TodoListProps {
   search: string;
   selectedTodo: string;
   setSearch: (value: string) => void;
-//   setPage:num;
+  //   setPage:num;
   searchActive: boolean;
   setSearchActive: (value: boolean) => void;
   fetchTodosList: () => void;
@@ -97,9 +97,9 @@ const TodoList = ({
             ariaLabel="tail-spin-loading"
           />
         </div>
-      ) : (
+      ) : todos && todos.length > 0 ? (
         todos
-          ?.filter((todo) =>
+          .filter((todo) =>
             todo.title.toLowerCase().includes(search.toLowerCase())
           )
           .map((todo, index) => (
@@ -116,7 +116,11 @@ const TodoList = ({
             >
               <div className="w-3/4">
                 <h2 className="font-bold">{todo.title}</h2>
-                <p className="text-xs text-gray-600">{todo.content.length > 40 ? `${todo.content.slice(0, 40)}...` : todo.content}</p>
+                <p className="text-xs text-gray-600">
+                  {todo.content.length > 40
+                    ? `${todo.content.slice(0, 40)}...`
+                    : todo.content}
+                </p>
               </div>
               <p className="text-xs text-gray-400">
                 {new Date(todo.createdAt).toLocaleDateString("en-DE", {
@@ -127,6 +131,12 @@ const TodoList = ({
               </p>
             </div>
           ))
+      ) : (
+        <div className="flex items-center justify-center h-100 bg-white mx-3">
+          <div className="flex justify-center items-center">
+            <h3 className="font-bold">Please add a todo</h3>
+          </div>
+        </div>
       )}
 
       <div className="flex items-center justify-center mt-4">
@@ -153,7 +163,9 @@ const TodoList = ({
         ))}
 
         <button
-          onClick={() => setPage((prev: number) => Math.min(prev + 1, totalPages))}
+          onClick={() =>
+            setPage((prev: number) => Math.min(prev + 1, totalPages))
+          }
           disabled={page === totalPages}
           className={`bg-white px-4 py-2 mx-2 rounded shadow ${
             page === totalPages ? "opacity-50 cursor-not-allowed" : ""
